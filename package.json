@@ -1,0 +1,20 @@
+{
+  "name": "robinson-crusoe",
+  "version": "1.0.0",
+  "description": "A lonely minimalist framework with purpose and meaning for seeing OOP as two separate devices, one a chain of functions (constructors with super calls) and another as a set of functions that build up a single object (methods).",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fantasyui-com/robinson-crusoe.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fantasyui-com/robinson-crusoe/issues"
+  },
+  "homepage": "https://github.com/fantasyui-com/robinson-crusoe#readme"
+}
