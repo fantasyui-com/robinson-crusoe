@@ -1,68 +1,51 @@
-const EventEmitter = require('events');
+const internal = require('./internal');
 
-const coreLib = require('./lib');
+// construct the initial library
+const library = {doesNothing: function(){}};
 
-class MyEmitter extends EventEmitter {}
+Object.assign( library, internal );
 
-
-const root = null;
 const core = {};
 
-module.exports = function({lib}){
+module.exports = function(object, { modules }){
 
-  const required = Object.assign({},coreLib,lib);
+  // extend library with user modules;
+  Object.assign(library , modules);
 
-  let builder = new Proxy(core,
+
+  const builder = new Proxy(core,
 
   {
     get: function(obj, prop) {
 
-      const isInitial = !!(root);
+      const description = prop.replace(/([A-Z])/g, '-$1').toLowerCase();
+      const [verb, noun] = description.split("-");
 
-      if(isInitial){
-        root = new MyEmitter();
-        root.on('test', () => {
-          console.log('test event occurred!');
-        });
-        root.emit('test');
-      }
+      if(!verb) throw new Error('Verb is missing.')
+      if(!noun) throw new Error('Noun is missing.')
 
-      const id = (prop.split(/^[a-z]+/, 2)[1]||"").toLowerCase();
-
-      if(id){
-        console.log("const %s = require('./lib/%s')(root)", id,id);
-        if(required[id]){
-          required[id](root);
-        }else{
-          throw new Error(`Item not in library: ${id.replace(/[^a-z]/g,'?')}, library contains ${Object.keys(required).map(i=>i.replace(/[^a-z]/g,'?')).map(i=>`"${i}"`).join(', ')}.`)
-        }
-      }else{
-
-      }
+      console.log([verb, noun]);
+      // const id = (prop.split(/^[a-z]+/, 2)[1]||"").toLowerCase();
+      //
+      // if(id){
+      //
+      //   console.log("const %s = require('./lib/%s')(root)", id,id);
+      //   if(library[id]){
+      //     library[id](root);
+      //   }else{
+      //     throw new Error(`Item not in library: ${id.replace(/[^a-z]/g,'?')}, library contains ${Object.keys(library).map(i=>i.replace(/[^a-z]/g,'?')).map(i=>`"${i}"`).join(', ')}.`)
+      //   }
+      //
+      // }else{
+      //
+      // }
 
 
-      return opts => builder;
-    },
-
-    set: function(obj, prop, value) {
-      // An extra property
-      if (prop === 'latestBrowser') {
-        obj.browsers.push(value);
-        return true;
-      }
-
-      // Convert the value if it is not an array
-      if (typeof value === 'string') {
-        value = [value];
-      }
-
-      // The default behavior to store the value
-      obj[prop] = value;
-
-      // Indicate success
-      return true;
-    }
+      // always return builder
+      return ()=>builder;
+    }, // get
   }
+
   );
 
   return builder;
