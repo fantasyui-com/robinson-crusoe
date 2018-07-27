@@ -1,14 +1,34 @@
+const ora = require('ora');
+
+const spinner = ora('Washing Machine').start();
+
 const ReactiveEmitter = require('./reactive-emitter');
 
 const Builder = require('.');
+
+
+
+
+
 
 const modules = {
   foo: function(){},
   quux: function(){},
 };
 
+
+
+
+
+
 // Create a base object
 const object = new ReactiveEmitter();
+
+
+
+
+
+
 
 // Build it up with enhancements (This represents prototypal Inheritance, everything runs in a chain, automatically)
 Builder(object, { modules })
@@ -19,44 +39,56 @@ Builder(object, { modules })
   // .withActions()
   // .testFeatures()
 
+
+
+
+
+
+
 // At this point object has been enhanced and we can use its features as such:
 
 object.emit('test');
-object.attribute('name', 'Alice');
-object.attribute('mail', 'alice@example.com');
+object.attribute('name', 'Washing');
+object.attribute('thing', 'Dog');
 
-object.on('displayBusinessCardObject', function(card){
-  console.log('displayBusinessCardObject:', card);
+object.on('UpdateMessage', function(data){
+  // console.log('CALLED: UpdateMessage:', card);
+  spinner.color = 'yellow';
+  spinner.text = object.attribute('name') + ' ' + data.thing;
+
 });
 
-object.hook('makeBusinessCardObject', function(){
+object.hook('CreateMessage', function(){
+  // console.log('CALLED: CreateMessage');
 
   const name = this.attribute('name');
-  const mail = this.attribute('mail');
+  const thing = this.attribute('thing');
+  const data = { name, thing };
 
-  const card = { name, mail };
-
-  object.emit('displayBusinessCardObject', card);
-
+  this.emit('UpdateMessage', data);
 });
 
 
 
-// - - -- -- Show Result -- -- - - //
-// console.log ( object ) ;
-// console.log ( object.constructor.name ) ;
-//
-// console.log ( object ) ;
-
-console.log("First call...")
-object.emit('makeBusinessCardObject');
 
 
 
-console.log ( '\n\n2: ---\n\n' ) ;
 
-object.attribute('mail', 'alice@example.com');
+// LATER ...
 
+setTimeout(function(){
+  object.emit('CreateMessage');
+},2000)
 
-console.log ( '\n\n3: ---\n\n' ) ;
-object.attribute('mail', 'alice@example.com');
+setTimeout(function(){
+  object.attribute('thing', 'Horse');
+},4000)
+
+setTimeout(function(){
+  object.attribute('thing', 'Hands');
+},6000)
+
+setTimeout(function(){
+  spinner.stop();
+  process.exit(0)
+},10000)

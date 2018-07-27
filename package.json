@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/fantasyui-com/robinson-crusoe/issues"
   },
-  "homepage": "https://github.com/fantasyui-com/robinson-crusoe#readme"
+  "homepage": "https://github.com/fantasyui-com/robinson-crusoe#readme",
+  "devDependencies": {
+    "ora": "^3.0.0"
+  }
 }
